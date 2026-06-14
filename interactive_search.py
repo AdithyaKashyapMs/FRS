@@ -3,6 +3,11 @@ from shared_functions import *
 # Global variable to store loaded food items
 food_items = []
 
+search_stats = {
+    "total_searches": 0,
+    "last_query": None
+}
+
 def main():
     """Main function for interactive CLI food recommendation system"""
     try:
@@ -39,7 +44,7 @@ def interactive_food_chatbot(collection):
     print("  • 'quit' or 'exit' - Exit the system")
     print("  • Ctrl+C - Emergency exit")
     print("-" * 50)
-    
+
     while True:
         try:
             # Get user input
@@ -59,6 +64,9 @@ def interactive_food_chatbot(collection):
             # Handle help command
             elif user_input.lower() in ['help', 'h']:
                 show_help_menu()
+
+            elif user_input.lower() == "stats":
+                show_search_stats()
             
             # Handle food search
             else:
@@ -83,6 +91,7 @@ def show_help_menu():
     print("\nCommands:")
     print("  • 'help' - Show this help menu")
     print("  • 'quit' - Exit the system")
+    print("  • 'stats' - View search statistics")
 
 def handle_food_search(collection, query):
     """Handle food similarity search with enhanced display"""
@@ -90,6 +99,8 @@ def handle_food_search(collection, query):
     print("   Please wait...")
     
     # Perform similarity search
+    search_stats["total_searches"] += 1
+    search_stats["last_query"] = query
     results = perform_similarity_search(collection, query, 5)
     
     if not results:
@@ -144,3 +155,9 @@ def suggest_related_searches(results):
 
 if __name__ == "__main__":
     main()
+
+def show_search_stats():
+    print("\n📊 SEARCH ANALYTICS")
+    print("-" * 30)
+    print(f"Total Searches: {search_stats['total_searches']}")
+    print(f"Last Query: {search_stats['last_query']}")
